@@ -1,0 +1,13 @@
+import express from "express";
+import dotenv from "dotenv";
+import connnectDB from "./config/db.js";
+import userRoutes from './routes/user.js';
+dotenv.config();
+await connnectDB();
+const app = express();
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use("/api/user", userRoutes);
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
+});
