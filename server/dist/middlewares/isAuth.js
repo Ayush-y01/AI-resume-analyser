@@ -1,0 +1,43 @@
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+export const isAuth = async (req, res, next) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            res.status(404).json({
+                message: "Please login no auth header"
+            });
+            return;
+        }
+        const token = authHeader.split(' ')[1];
+        if (!token) {
+            res.status(404).json({
+                message: "Please login Token missing"
+            });
+            return;
+        }
+        const decodedData = jwt.verify(token, process.env.JWT_SEC);
+        if (!decodedData || !decodedData._id) {
+            res.status(500).json({
+                message: "Authenticaton failed"
+            });
+            return;
+        }
+        const user = await User.findById(decodedData._id);
+        if (!user) {
+            res.status(400).json({
+                message: "Token expired!!!"
+            });
+            return;
+        }
+        req.user = user;
+        next();
+    }
+    catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: "please login"
+        });
+        return;
+    }
+};
