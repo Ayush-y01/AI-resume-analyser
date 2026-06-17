@@ -11,6 +11,8 @@ import {
   Briefcase,
   ArrowRight,
 } from "lucide-react";
+import { HashLink } from "react-router-hash-link";
+
 
 const Account = () => {
   const { user, LogoutUser } = useAppData();
@@ -21,7 +23,7 @@ const Account = () => {
 
   const freeLeft = Math.max(
     0,
-    3 - (user?.freeRequestUsed ?? 0)
+    3 - (user?.freeRequestsUsed ?? 0)
   );
 
   return (
@@ -32,17 +34,14 @@ const Account = () => {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <img
               src={
-                user?.image ||
-                `https://ui-avatars.com/api/?name=${user?.name}`
+                user?.image || `https://ui-avatars.com/api/?name=${user?.name}`
               }
               alt="profile"
               className="w-24 h-24 rounded-full border border-white/10"
             />
 
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-bold text-white">
-                {user?.name}
-              </h1>
+              <h1 className="text-3xl font-bold text-white">{user?.name}</h1>
 
               <div className="flex items-center gap-2 text-white/50 mt-2 justify-center md:justify-start">
                 <Mail size={16} />
@@ -71,9 +70,7 @@ const Account = () => {
             {/* Free Usage */}
             <div className="grid md:grid-cols-3 gap-6 mt-8">
               <div className="glass-card p-6">
-                <p className="text-white/50 text-sm">
-                  Free Requests Left
-                </p>
+                <p className="text-white/50 text-sm">Free Requests Left</p>
 
                 <h2 className="text-5xl font-bold text-white mt-3">
                   {freeLeft}
@@ -85,31 +82,19 @@ const Account = () => {
               </div>
 
               <div className="glass-card p-6">
-                <p className="text-white/50 text-sm">
-                  Current Plan
-                </p>
+                <p className="text-white/50 text-sm">Current Plan</p>
 
-                <h2 className="text-3xl font-bold text-white mt-3">
-                  Free
-                </h2>
+                <h2 className="text-3xl font-bold text-white mt-3">Free</h2>
 
-                <p className="text-white/40 text-sm mt-2">
-                  Basic Access
-                </p>
+                <p className="text-white/40 text-sm mt-2">Basic Access</p>
               </div>
 
               <div className="glass-card p-6">
-                <p className="text-white/50 text-sm">
-                  Premium Features
-                </p>
+                <p className="text-white/50 text-sm">Premium Features</p>
 
-                <h2 className="text-3xl font-bold text-white mt-3">
-                  Locked
-                </h2>
+                <h2 className="text-3xl font-bold text-white mt-3">Locked</h2>
 
-                <p className="text-white/40 text-sm mt-2">
-                  Upgrade Required
-                </p>
+                <p className="text-white/40 text-sm mt-2">Upgrade Required</p>
               </div>
             </div>
 
@@ -122,15 +107,18 @@ const Account = () => {
                   </h2>
 
                   <p className="text-white/60 mt-3">
-                    Get unlimited ATS reports, interview
-                    preparation, resume builder and smart
-                    job matching.
+                    Get unlimited ATS reports, interview preparation, resume
+                    builder and smart job matching.
                   </p>
                 </div>
 
-                <button className="btn-primary px-8 py-4 rounded-xl">
+                <HashLink
+                  smooth
+                  to="/#Pricing"
+                  className="btn-primary px-8 py-4 rounded-xl inline-flex items-center justify-center"
+                >
                   Upgrade Now
-                </button>
+                </HashLink>
               </div>
             </div>
 
@@ -153,14 +141,9 @@ const Account = () => {
                     key={feature}
                     className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10"
                   >
-                    <Lock
-                      size={18}
-                      className="text-amber-400"
-                    />
+                    <Lock size={18} className="text-amber-400" />
 
-                    <span className="text-white/70">
-                      {feature}
-                    </span>
+                    <span className="text-white/70">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -175,42 +158,26 @@ const Account = () => {
             <div className="grid md:grid-cols-4 gap-6 mt-8">
               <div className="glass-card p-6 hover:-translate-y-2 transition-all">
                 <BarChart3 className="text-indigo-400 mb-3" />
-                <h2 className="text-4xl font-bold text-white">
-                  92
-                </h2>
-                <p className="text-white/50">
-                  ATS Score
-                </p>
+                <h2 className="text-4xl font-bold text-white">92</h2>
+                <p className="text-white/50">ATS Score</p>
               </div>
 
               <div className="glass-card p-6 hover:-translate-y-2 transition-all">
                 <FileText className="text-emerald-400 mb-3" />
-                <h2 className="text-4xl font-bold text-white">
-                  24
-                </h2>
-                <p className="text-white/50">
-                  Reports Generated
-                </p>
+                <h2 className="text-4xl font-bold text-white">24</h2>
+                <p className="text-white/50">Reports Generated</p>
               </div>
 
               <div className="glass-card p-6 hover:-translate-y-2 transition-all">
                 <Briefcase className="text-cyan-400 mb-3" />
-                <h2 className="text-4xl font-bold text-white">
-                  18
-                </h2>
-                <p className="text-white/50">
-                  Interview Sessions
-                </p>
+                <h2 className="text-4xl font-bold text-white">18</h2>
+                <p className="text-white/50">Interview Sessions</p>
               </div>
 
               <div className="glass-card p-6 hover:-translate-y-2 transition-all">
                 <Sparkles className="text-amber-400 mb-3" />
-                <h2 className="text-4xl font-bold text-white">
-                  ∞
-                </h2>
-                <p className="text-white/50">
-                  AI Requests
-                </p>
+                <h2 className="text-4xl font-bold text-white">∞</h2>
+                <p className="text-white/50">AI Requests</p>
               </div>
             </div>
 
@@ -229,9 +196,7 @@ const Account = () => {
 
                 <span>
                   Active until{" "}
-                  {new Date(
-                    user!.subscription
-                  ).toLocaleDateString("en-IN", {
+                  {new Date(user!.subscription).toLocaleDateString("en-IN", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -293,4 +258,4 @@ const Account = () => {
   );
 };
 
-export default Account;`  `
+export default Account;
