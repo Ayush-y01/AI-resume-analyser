@@ -7,17 +7,24 @@ import { AuthenticatedRequest } from "../middlewares/isAuth.js";
 
 
 export const loginUser = TryCatch(async(req , res) => {
-    const {code} = req.body
+    // const {code} = req.body
 
-    if (!code) {
-        return res.status(400).json({
-            message:"Authorization Code is required"
-        })
-    }
+    // if (!code) {
+    //     return res.status(400).json({
+    //         message:"Authorization Code is required"
+    //     })
+    // }
 
-    const googleRes = await oauth2client.getToken(code)
+    try {
+    console.log("LOGIN HIT");
+    console.log(req.body);
 
+    const { code } = req.body;
 
+    const googleRes = await oauth2client.getToken(code);
+
+    console.log("GOOGLE TOKEN:", googleRes.tokens);
+    
     oauth2client.setCredentials(googleRes.tokens)
 
     const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`);
@@ -44,6 +51,45 @@ export const loginUser = TryCatch(async(req , res) => {
         token,
         user
     })
+
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+
+    return res.status(500).json({
+      message: "Login Failed",
+      error: err,
+    });
+  }
+
+    // const googleRes = await oauth2client.getToken(code)
+
+
+    // oauth2client.setCredentials(googleRes.tokens)
+
+    // const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`);
+
+    // const {email, name, picture} = userRes.data;
+
+
+    // let user = await User.findOne({email})
+
+    // if (!user) {
+    //     user = await User.create({
+    //         name,
+    //         email,
+    //         image:picture
+    //     })
+    // }
+
+    // const token = jwt.sign({_id:user._id}, process.env.JWT_SEC as string, {
+    //     expiresIn: "15d"
+    // })
+
+    // res.json({
+    //     message:"User logged in",
+    //     token,
+    //     user
+    // })
 })
 
 export const myProfile = TryCatch(async(req:AuthenticatedRequest, res) => {
