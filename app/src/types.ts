@@ -37,6 +37,7 @@ export interface Question {
 export interface InterviewData {
   role: string;
   round: string;
+  summary: string;
   questions: Question[];
 }
 
