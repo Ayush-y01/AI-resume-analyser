@@ -7,4 +7,4 @@ const router = express.Router()
 router.post("/login", loginUser)
 router.get("/me", isAuth, myProfile)
 
-export default router
+export default router 
