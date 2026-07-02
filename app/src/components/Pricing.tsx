@@ -1,27 +1,83 @@
 import { useNavigate } from "react-router-dom";
 import { useAppData } from "../context/AppContext";
 import { plans } from "../utils";
+import { useState } from "react";
+import axios from "axios";
+import { server } from "../main";
+import toast from "react-hot-toast";
+
+declare global{
+  interface Window{
+    Razorpay: any
+  }
+}
+
 
 const Pricing = () => {
   const navigate = useNavigate();
-  const { isAuth, user } = useAppData();
+  const { isAuth, user, setUser } = useAppData();
+  const [loading, setLoading] = useState(false)
 
   const isPro =
     isAuth &&
     user?.subscription &&
     new Date() < new Date(user.subscription);
 
-  const handleSubscribe = (planName: string) => {
-    if (!isAuth) {
-      navigate("/login");
-      return;
+  const handleSubscribe = async (price:any) => {
+    const token = localStorage.getItem("token")
+
+    setLoading(true)
+
+    let duration 
+
+    if (price === "$299") {
+      duration = 1;
+    }else{
+      duration = 6
     }
+    
+    const {data: {order}} = await axios.post(`${server}/api/payment/checkout`, {duration},{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
 
-    if (planName === "Free") return;
 
-    // Razorpay Integration Here
-    console.log("Subscribe:", planName);
+    const options = {
+    "key": "rzp_test_SgzETwXoU8O2Jk", 
+    "amount": order.id, 
+    "currency": "INR",
+    "name": "Career AI",
+    "description": "Find job easily",
+    "order_id": order.id, 
+    
+    handler: async function (response:any) {
+      const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = response
+      try {
+        const {data} = await axios.post(`${server}/api/payment/verify`,{razorpay_order_id, razorpay_payment_id, razorpay_signature},{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        toast.success(data.message)
+        setUser(data.updateUser)
+        navigate("/account")
+        setLoading(false)
+      } catch (error: any) {
+        setLoading(false)
+        toast.error(error.response.data.message) 
+      }
+    },
+    theme:{
+      color:"#F#7254"
+    }
   };
+
+  const razorpay = new window.Razorpay(options)
+  razorpay.open()
+
+};
 
   return (
     <section className="py-32 px-6">
@@ -127,7 +183,7 @@ const Pricing = () => {
                 </button>
               ) : (
                 <button
-                  onClick={() => handleSubscribe(plan.name)}
+                  onClick={() => handleSubscribe(plan.price)}
                   className={`
                     mt-8 py-3 rounded-xl font-semibold transition-all duration-300
                     ${
