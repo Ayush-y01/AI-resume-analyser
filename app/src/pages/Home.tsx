@@ -1,6 +1,6 @@
 import Hero from "../components/Hero";
 import Features from "../components/Features";
-import Pricing from "../components/pricing";
+import Pricing from "../components/Pricing";
 import CTABanner from "../components/CTABanner";
 
 const Home = () => {
@@ -24,7 +24,7 @@ const Home = () => {
       </section>
 
       {/* Pricing */}
-      <section>
+      <section  id="Pricing">
         <Pricing />
       </section>
 
